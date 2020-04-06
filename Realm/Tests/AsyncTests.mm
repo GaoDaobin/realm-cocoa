@@ -841,6 +841,17 @@
     }];
 }
 
+- (void)testAddNotificationBlockFromWrongQueue {
+    // FIXME: this probably actually needs to work
+    RLMRealm *realm = [RLMRealm defaultRealmForQueue:dispatch_get_main_queue()];
+    RLMResults *results = [IntObject allObjectsInRealm:realm];
+    [self dispatchAsyncAndWait:^{
+        XCTAssertThrows([results addNotificationBlock:^(RLMResults *results, RLMCollectionChange *change, NSError *error) {
+            XCTFail(@"should not be called");
+        }]);
+    }];
+}
+
 - (void)testRemoveNotificationBlockFromWrongThread {
     // Unlike adding this is allowed, because it can happen due to capturing
     // tokens in blocks and users are very confused by errors from deallocation

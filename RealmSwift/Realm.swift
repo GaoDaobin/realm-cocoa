@@ -80,6 +80,10 @@ public struct Realm {
         let rlmRealm = try RLMRealm(configuration: configuration.rlmConfiguration)
         self.init(rlmRealm)
     }
+    public init(configuration: Configuration, queue: DispatchQueue?) throws {
+        let rlmRealm = try RLMRealm(configuration: configuration.rlmConfiguration, queue: queue)
+        self.init(rlmRealm)
+    }
 
     /**
      Obtains a `Realm` instance persisted at a specified file URL.

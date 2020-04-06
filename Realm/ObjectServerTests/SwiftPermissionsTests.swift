@@ -164,7 +164,7 @@ class SwiftPermissionsAPITests: SwiftSyncTestCase {
                 }
             }
         }
-        waitForExpectations(timeout: 10.0, handler: nil)
+        waitForExpectations(timeout: 1000.0, handler: nil)
         token.invalidate()
     }
 

@@ -78,6 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
  @return The default `RLMRealm` instance for the current thread.
  */
 + (instancetype)defaultRealm;
++ (instancetype)defaultRealmForQueue:(dispatch_queue_t)queue;
 
 /**
  Obtains an `RLMRealm` instance with the given configuration.
@@ -90,6 +91,10 @@ NS_ASSUME_NONNULL_BEGIN
  @return An `RLMRealm` instance.
  */
 + (nullable instancetype)realmWithConfiguration:(RLMRealmConfiguration *)configuration error:(NSError **)error;
+
++ (nullable instancetype)realmWithConfiguration:(RLMRealmConfiguration *)configuration
+                                          queue:(nullable dispatch_queue_t)queue
+                                          error:(NSError **)error;
 
 /**
  Obtains an `RLMRealm` instance persisted at a specified file URL.
