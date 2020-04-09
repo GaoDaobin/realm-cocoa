@@ -372,7 +372,13 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (RLMNotificationToken *)addNotificationBlock:(void (^)(RLMArray<RLMObjectType> *__nullable array,
                                                          RLMCollectionChange *__nullable changes,
-                                                         NSError *__nullable error))block __attribute__((warn_unused_result));
+                                                         NSError *__nullable error))block
+__attribute__((warn_unused_result));
+- (RLMNotificationToken *)addNotificationBlock:(void (^)(RLMArray<RLMObjectType> *__nullable array,
+                                                         RLMCollectionChange *__nullable changes,
+                                                         NSError *__nullable error))block
+                                receiveOnQueue:(nullable dispatch_queue_t)queue
+__attribute__((warn_unused_result));
 
 #pragma mark - Aggregating Property Values
 

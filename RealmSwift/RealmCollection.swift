@@ -459,10 +459,10 @@ public protocol RealmCollection: RealmCollectionBase, _RealmCollectionEnumerator
      - parameter block: The block to be called whenever a change occurs.
      - returns: A token which must be held for as long as you want updates to be delivered.
      */
-    func observe(_ block: @escaping (RealmCollectionChange<Self>) -> Void) -> NotificationToken
+    func observe(on queue: DispatchQueue?, _ block: @escaping (RealmCollectionChange<Self>) -> Void) -> NotificationToken
 
     /// :nodoc:
-    func _observe(_ block: @escaping (RealmCollectionChange<AnyRealmCollection<Element>>) -> Void) -> NotificationToken
+    func _observe(_ queue: DispatchQueue?, _ block: @escaping (RealmCollectionChange<AnyRealmCollection<Element>>) -> Void) -> NotificationToken
 
     // MARK: Frozen Objects
 
@@ -483,6 +483,12 @@ public protocol RealmCollection: RealmCollectionBase, _RealmCollectionEnumerator
      `Realm.Configuration.maximumNumberOfActiveVersions` for more information.
     */
     func freeze() -> Self
+}
+
+public extension RealmCollection {
+    func observe(on queue: DispatchQueue? = nil, _ block: @escaping (RealmCollectionChange<Self>) -> Void) -> NotificationToken {
+        return observe(on: queue, block)
+    }
 }
 
 public extension RealmCollection {
@@ -634,7 +640,7 @@ private class _AnyRealmCollectionBase<T: RealmCollectionValue>: AssistedObjectiv
     func value(forKey key: String) -> Any? { fatalError() }
     func value(forKeyPath keyPath: String) -> Any? { fatalError() }
     func setValue(_ value: Any?, forKey key: String) { fatalError() }
-    func _observe(_ block: @escaping (RealmCollectionChange<Wrapper>) -> Void)
+    func _observe(_ queue: DispatchQueue?, _ block: @escaping (RealmCollectionChange<Wrapper>) -> Void)
         -> NotificationToken { fatalError() }
     class func bridging(from objectiveCValue: Any, with metadata: Any?) -> Self { fatalError() }
     var bridged: (objectiveCValue: Any, metadata: Any?) { fatalError() }
@@ -739,8 +745,8 @@ private final class _AnyRealmCollection<C: RealmCollection>: _AnyRealmCollection
     // MARK: Notifications
 
     /// :nodoc:
-    override func _observe(_ block: @escaping (RealmCollectionChange<Wrapper>) -> Void)
-        -> NotificationToken { return base._observe(block) }
+    override func _observe(_ queue: DispatchQueue?, _ block: @escaping (RealmCollectionChange<Wrapper>) -> Void)
+        -> NotificationToken { return base._observe(queue, block) }
 
     // MARK: AssistedObjectiveCBridgeable
 
@@ -1029,12 +1035,13 @@ public struct AnyRealmCollection<Element: RealmCollectionValue>: RealmCollection
      - parameter block: The block to be called whenever a change occurs.
      - returns: A token which must be held for as long as you want updates to be delivered.
      */
-    public func observe(_ block: @escaping (RealmCollectionChange<AnyRealmCollection>) -> Void)
-        -> NotificationToken { return base._observe(block) }
+    public func observe(on queue: DispatchQueue? = nil,
+                        _ block: @escaping (RealmCollectionChange<AnyRealmCollection>) -> Void)
+        -> NotificationToken { return base._observe(queue, block) }
 
     /// :nodoc:
-    public func _observe(_ block: @escaping (RealmCollectionChange<AnyRealmCollection>) -> Void)
-        -> NotificationToken { return base._observe(block) }
+    public func _observe(_ queue: DispatchQueue?, _ block: @escaping (RealmCollectionChange<AnyRealmCollection>) -> Void)
+        -> NotificationToken { return base._observe(queue, block) }
 
     // MARK: Frozen Objects
 

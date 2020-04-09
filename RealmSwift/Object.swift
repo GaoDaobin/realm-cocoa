@@ -241,8 +241,8 @@ open class Object: RLMObjectBase, RealmCollectionValue {
      - parameter block: The block to call with information about changes to the object.
      - returns: A token which must be held for as long as you want updates to be delivered.
      */
-    public func observe(_ block: @escaping (ObjectChange) -> Void) -> NotificationToken {
-        return RLMObjectAddNotificationBlock(self, { names, oldValues, newValues, error in
+    public func observe(on queue: DispatchQueue? = nil, _ block: @escaping (ObjectChange) -> Void) -> NotificationToken {
+        return RLMObjectBaseAddNotificationBlock(self, queue) { names, oldValues, newValues, error in
             if let error = error {
                 block(.error(error as NSError))
                 return
@@ -255,7 +255,7 @@ open class Object: RLMObjectBase, RealmCollectionValue {
             block(.change((0..<newValues.count).map { i in
                 PropertyChange(name: names[i], oldValue: oldValues?[i], newValue: newValues[i])
             }))
-        })
+        }
     }
 
     // MARK: Dynamic list

@@ -584,6 +584,7 @@ typedef void (^RLMObjectChangeBlock)(BOOL deleted,
  @return A token which must be held for as long as you want updates to be delivered.
  */
 - (RLMNotificationToken *)addNotificationBlock:(RLMObjectChangeBlock)block;
+- (RLMNotificationToken *)addNotificationBlock:(RLMObjectChangeBlock)block receiveOnQueue:(dispatch_queue_t)queue;
 
 #pragma mark - Other Instance Methods
 

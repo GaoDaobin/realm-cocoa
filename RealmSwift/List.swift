@@ -414,10 +414,11 @@ public final class List<Element: RealmCollectionValue>: ListBase {
      - parameter block: The block to be called whenever a change occurs.
      - returns: A token which must be held for as long as you want updates to be delivered.
      */
-    public func observe(_ block: @escaping (RealmCollectionChange<List>) -> Void) -> NotificationToken {
-        return _rlmArray.addNotificationBlock { _, change, error in
+    public func observe(on queue: DispatchQueue? = nil,
+                        _ block: @escaping (RealmCollectionChange<List>) -> Void) -> NotificationToken {
+        return _rlmArray.addNotificationBlock({ _, change, error in
             block(RealmCollectionChange.fromObjc(value: self, change: change, error: error))
-        }
+        }, receiveOn: queue)
     }
 
     // MARK: Frozen Objects
@@ -515,11 +516,11 @@ extension List: RealmCollection {
     public func index(before i: Int) -> Int { return i - 1 }
 
     /// :nodoc:
-    public func _observe(_ block: @escaping (RealmCollectionChange<AnyRealmCollection<Element>>) -> Void) -> NotificationToken {
+    public func _observe(_ queue: DispatchQueue?, _ block: @escaping (RealmCollectionChange<AnyRealmCollection<Element>>) -> Void) -> NotificationToken {
         let anyCollection = AnyRealmCollection(self)
-        return _rlmArray.addNotificationBlock { _, change, error in
+        return _rlmArray.addNotificationBlock({ _, change, error in
             block(RealmCollectionChange.fromObjc(value: anyCollection, change: change, error: error))
-        }
+        }, receiveOn: queue)
     }
 }
 
